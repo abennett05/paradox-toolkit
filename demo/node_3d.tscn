@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://cpyskgk2ubqo2"]
+
+[ext_resource type="Script" uid="uid://d1efq4eqmra0y" path="res://tools/trigger/Trigger.gd" id="1_jyts4"]
+[ext_resource type="Script" uid="uid://cj8embj70xm31" path="res://tools/effects/EffectController.gd" id="2_nvkwf"]
+[ext_resource type="Script" uid="uid://doo523e36mjq3" path="res://tools/effects/Effect.gd" id="3_6jgfw"]
+[ext_resource type="PackedScene" uid="uid://cs8dgu816303i" path="res://demo/scenes/entities/player.tscn" id="6_38uui"]
+[ext_resource type="Script" uid="uid://c3vbm5b3vlayf" path="res://tools/effects/SoundEffect.gd" id="6_bxnk0"]
+[ext_resource type="AudioStream" uid="uid://b1nilj057n0qp" path="res://demo/temp/whip.mp3" id="7_uyyla"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_4xowi"]
+size = Vector2(20, 20)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_4xowi"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3mqlp"]
+size = Vector3(1, 2.0084229, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jyts4"]
+
+[sub_resource type="Resource" id="Resource_3mqlp"]
+script = ExtResource("6_bxnk0")
+sound = ExtResource("7_uyyla")
+id = "enter"
+metadata/_custom_type_script = "uid://c3vbm5b3vlayf"
+
+[node name="Level" type="Node3D" unique_id=935872831]
+
+[node name="Geo" type="Node" parent="." unique_id=885622523]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Geo" unique_id=1626753550]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Geo/StaticBody3D" unique_id=135774627]
+mesh = SubResource("PlaneMesh_4xowi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geo/StaticBody3D" unique_id=1734089468]
+shape = SubResource("WorldBoundaryShape3D_4xowi")
+
+[node name="Trigger" type="Area3D" parent="." unique_id=1987016202]
+script = ExtResource("1_jyts4")
+allowed_groups = Array[String](["player"])
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Trigger" unique_id=976018039]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72540283, 0)
+shape = SubResource("BoxShape3D_3mqlp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Trigger" unique_id=1225167124]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62951547, 0)
+mesh = SubResource("BoxMesh_jyts4")
+
+[node name="TriggerEnterEffect" type="Node3D" parent="." unique_id=2118149235]
+script = ExtResource("2_nvkwf")
+effects = Array[ExtResource("3_6jgfw")]([SubResource("Resource_3mqlp")])
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1898961786]
+transform = Transform3D(1, 0, 0, 0, -0.36797667, 0.929835, 0, -0.929835, -0.36797667, 0, 0, 0)
+
+[node name="Player" parent="." unique_id=900587073 instance=ExtResource("6_38uui")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.115054)
+
+[connection signal="trigger_enter" from="Trigger" to="TriggerEnterEffect" method="play_effect" unbinds=1 binds= ["enter"]]
